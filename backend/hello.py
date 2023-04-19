@@ -57,7 +57,7 @@ def factorize(product):
     product=int(product)
     n=product
     factors=''
-    while i < product/2:
+    while i <= product//2:
        if n%i == 0:
            factors = factors + str(i) + '*'
            n=n/i
