@@ -1,32 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment 
 metadata:
-  name: mariadb-deployment
+  name: 
   labels:
-    app: mariadb
+    app: 
 spec:
-  replicas: 1
+  replicas: 
   selector:
     matchLabels:
-      app: mariadb
+      app: 
   template:
     metadata:
       labels:
-        app: mariadb
+        app: 
     spec:
       containers:
-      - name: mariadb
+      - name: 
         image: mariadb:10-focal
         ports:
         - containerPort: 3306 
         env:
-        #- name: MARIADB_RANDOM_ROOT_PASSWORD
-        - name: MARIADB_ALLOW_EMPTY_ROOT_PASSWORD
-          value: "0" # if it is 1 and root_password is set, root_password takes precedance
-        - name: MARIADB_ROOT_PASSWORD
-          value: secret
-        - name: MARIADB_DATABASE
-          value: example
+
 
 
 ---
@@ -34,10 +28,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb-service
+  name: 
 spec:
   selector:
-    app: mariadb
+    app: 
   ports:
-  - port: 6000
-    targetPort: 3306
