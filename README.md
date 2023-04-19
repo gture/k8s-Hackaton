@@ -1,86 +1,49 @@
-## Compose sample application
+## K8s Hackaton
 
-### Use with Docker Development Environments
+This repo contains a simple Flask app and a mariaDB database. (and an nginx proxy, which we won't use)
 
-You can open this sample in the Dev Environments feature of Docker Desktop version 4.12 or later.
+The program takes a integer as input and factorizes it. It stores the result to the database.
 
-[Open in Docker Dev Environments <img src="../open_in_new.svg" alt="Open in Docker Dev Environments" align="top"/>](https://open.docker.com/dashboard/dev-envs?url=https://github.com/docker/awesome-compose/tree/master/nginx-flask-mysql)
 
-### Python/Flask with Nginx proxy and MySQL database
+Goal: To set up deployment for the flask app and the mariaDB database.
 
-Project structure:
-```
-.
-├── compose.yaml
-├── flask
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── server.py
-└── nginx
-    └── nginx.conf
 
-```
+Make sure that your docker daemon is running.
+Start up minikube with 
+minikube start
 
-[_compose.yaml_](compose.yaml)
-```
-services:
-  backend:
-    build:
-      context: backend
-      target: builder
-    ...
-  db:
-    # We use a mariadb image which supports both amd64 & arm64 architecture
-    image: mariadb:10-focal
-    # If you really want to use MySQL, uncomment the following line
-    #image: mysql:8
-    ...
-  proxy:
-    build: proxy
-    ...
-```
-The compose file defines an application with three services `proxy`, `backend` and `db`.
-When deploying the application, docker compose maps port 80 of the proxy service container to port 80 of the host as specified in the file.
-Make sure port 80 on the host is not already being in use.
+We need the our docker images to be available in minikube.
 
-> ℹ️ **_INFO_**  
-> For compatibility purpose between `AMD64` and `ARM64` architecture, we use a MariaDB as database instead of MySQL.  
-> You still can use the MySQL image by uncommenting the following line in the Compose file   
-> `#image: mysql:8`
+minikube docker-env
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://127.0.0.1:49590"
+export DOCKER_CERT_PATH="/Users/henrik/.minikube/certs"
+export MINIKUBE_ACTIVE_DOCKERD="minikube"
 
-## Deploy with docker compose
+# To point your shell to minikube's docker-daemon, run:
+# eval $(minikube -p minikube docker-env)
 
-```
-$ docker compose up -d
-Creating network "nginx-flask-mysql_default" with the default driver
-Pulling db (mysql:8.0.19)...
-5.7: Pulling from library/mysql
-...
-...
-WARNING: Image for service proxy was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
-Creating nginx-flask-mysql_db_1 ... done
-Creating nginx-flask-mysql_backend_1 ... done
-Creating nginx-flask-mysql_proxy_1   ... done
-```
+Now run the suggested command to point your shell to minikube's docker-daemon
+eval $(minikube -p minikube docker-env)
 
-## Expected result
+To build all necessary images run
+docker compose build
 
-Listing containers should show three containers running and the port mapping as below:
-```
-$ docker compose ps
-NAME                          COMMAND                  SERVICE             STATUS              PORTS
-nginx-flask-mysql-backend-1   "flask run"              backend             running             0.0.0.0:8000->8000/tcp
-nginx-flask-mysql-db-1        "docker-entrypoint.s…"   db                  running (healthy)   3306/tcp, 33060/tcp
-nginx-flask-mysql-proxy-1     "nginx -g 'daemon of…"   proxy               running             0.0.0.0:80->80/tcp
-```
+You should now be ready 
 
-After the application starts, navigate to `http://localhost:80` in your web browser or run:
-```
-$ curl localhost:80
-<div>Blog post #1</div><div>Blog post #2</div><div>Blog post #3</div><div>Blog post #4</div>
-```
+Task 1:
+Make a deployment for a pod running a mariadb:10-focal image. (pulled from the public docker repo)
 
-Stop and remove the containers
-```
-$ docker compose down
-```
+Task 2:
+Make a deployment for a pod running the flask app: k8stutorial-backend
+
+Task 3:
+Make a service for the mariaDB pod.
+  This must listen to port 6000 to work
+
+Task 4:
+Make a service for the backend pod.
+  This needs to be available outside the cluster. 
+  Hint: specify loadBalancer and NodePort
+
+

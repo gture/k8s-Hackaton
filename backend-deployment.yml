@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: backend
-        image: k8stutorial-backend:latest
-        imagePullPolicy: Never      
+        image: k8stutorial-backend:latest 
+        imagePullPolicy: Never    
         ports:
         - containerPort: 8000 
 

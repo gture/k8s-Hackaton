@@ -27,11 +27,15 @@ def testConnection():
     else:
         cur = conn.cursor()
     
-    cur.execute("SELECT (product, factors) FROM factorized")
+    cur.execute("SELECT * FROM factorized")
     rec = cur.fetchall()
     response = ''
-    for c in rec:
-         response = response  + '<div>   Factorization  ' + c + '</div>'
+    for item in rec:
+         product=str(item[1])
+         factors=''
+         for i in range(2,len(item)):
+             factors=factors + '*' + str(item[i])
+         response=response + '<div>   Factorization of  ' + str(product) + ' is ' + str(factors) + '</div>'
 
     return response
 """
@@ -69,13 +73,13 @@ def factorize(product):
     else:
         cur = conn.cursor()
     
-    cur.execute("CREATE TABLE IF NOT EXISTS factorized (id PRIMARY_KEY AUTO_INCREMENT, product INT,factors VARCHAR(1000))")
+    cur.execute("CREATE TABLE IF NOT EXISTS factorized (id int NOT NULL AUTO_INCREMENT, product INT,factors VARCHAR(1000), PRIMARY KEY (id))")
     cur.execute("INSERT factorized (product, factors) VALUES (%s,%s)", (product, factors))
-    cur.execute("SELECT (product, factors) FROM factorized")
+    cur.execute("SELECT (product) FROM factorized")
     rec = cur.fetchall()
 #    return rec[0][0]
 
-    return '%s = %s'  %( product, factors)
+    return ' asdasdsad %s = %s'  %( product, factors)
 
 @server.route('/insert',methods = ['POST', 'GET'])
 def insert():
